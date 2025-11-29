@@ -1,0 +1,349 @@
+@startuml
+
+'==========================================================
+'                 TABLAS PRINCIPALES
+'==========================================================
+
+class Lead {
+    +id: Integer
+    +created_at: DateTime
+    +updated_at: DateTime
+    +field_values: List<LeadFieldValue>
+
+    
+}
+
+/'
+    Ejemplos:
+    id = 15
+    created_at = "2025-01-10 12:33:00"
+    updated_at = "2025-01-10 12:33:00"
+'/
+
+class LeadField {
+    +id: Integer
+    +name: String
+    +field_type_id: Integer
+    +required: Boolean
+    +default_value: String
+    +primary: Boolean
+    +field_values: List<LeadFieldValue>
+    +nomenclator_id (nullable)
+    +file_type_id (nullable) 
+}
+
+/'
+    Ejemplos:
+    id = 1, name = "fecha_desde", field_type_id = 2 (DATE)
+    id = 2, name = "fecha_hasta", field_type_id = 2 (DATE)
+    id = 3, name = "monto_total", field_type_id = 3 (NUMBER)
+    id = 4, name = "descripcion", field_type_id = 1 (TEXT)
+'/
+
+class FileType{
+    +id
+    +name (image, pdf, document, etc.)
+}
+
+class LeadFieldValue {
+    +id: Integer
+    +lead_id: Integer
+    +field_id: Integer
+    +value: String
+}
+
+/'
+    Ejemplos:
+    lead_id=15, field_id=1 (fecha_desde), value="2025-02-01"
+    lead_id=15, field_id=2 (fecha_hasta), value="2025-02-10"
+    lead_id=15, field_id=3 (monto_total), value="1500.50"
+'/
+
+class LeadFieldType {
+    +id: Integer
+    +name: String
+    +data_type: Enum
+
+}
+
+/'
+    Ejemplos:
+    id=1, name="Texto", data_type="STRING"
+    id=2, name="Fecha", data_type="DATE"
+    id=3, name="Número", data_type="NUMBER"
+    id=4, name="Lista", data_type="ENUM"
+'/
+
+'==========================================================
+'        VALIDACIONES CONFIGURADAS POR EL USUARIO
+'==========================================================
+
+class ValidationRule {
+    +id: Integer
+    +name: String
+    +rule_type_id: Integer
+    +field_id: Integer
+    +related_field_id: Integer?
+    +static_value: String?
+    +min_value: Float?
+    +max_value: Float?
+    +min_length: Integer?
+    +max_length: Integer?
+    +regex: String?
+    +date_from: Date?
+    +date_to: Date?
+}
+
+/'
+    EJEMPLOS DE VALIDACIONES:
+
+    1) Validación entre campos:
+       name = "Fecha desde < Fecha hasta"
+       rule_type_id = 10 (DATE_LESS_THAN_FIELD)
+       field_id = 1 (fecha_desde)
+       related_field_id = 2 (fecha_hasta)
+
+    2) Fecha mayor a hoy:
+       name = "Fecha desde mayor a hoy"
+       rule_type_id = 11 (DATE_GREATER_THAN_TODAY)
+       field_id = 1
+       static_value = null
+
+    3) Número mínimo:
+       name = "Monto total mínimo"
+       rule_type_id = 3 (NUMBER_MIN)
+       field_id = 3 (monto_total)
+       min_value = 100.00
+
+    4) Texto con longitud mínima:
+       name = "Descripción longitud mínima"
+       rule_type_id = 20 (STRING_MIN_LENGTH)
+       field_id = 4 (descripcion)
+       min_length = 10
+
+    5) Regex:
+       name = "Formato DNI"
+       rule_type_id = 30 (STRING_REGEX)
+       field_id = 5 (dni)
+       regex = "^[0-9]{8}$"
+'/
+
+class ValidationRuleType {
+    +id: Integer
+    +name: String
+    +description: String
+
+}
+
+/'
+    Ejemplos:
+
+    (id=1) NUMBER_MIN              → El valor debe ser >= min_value
+    (id=2) NUMBER_MAX              → El valor debe ser <= max_value
+    (id=10) DATE_LESS_THAN_FIELD   → field < related_field
+    (id=11) DATE_GREATER_THAN_TODAY→ field > current_date
+    (id=20) STRING_MIN_LENGTH      → length(field) >= min_length
+    (id=21) STRING_MAX_LENGTH      → length(field) <= max_length
+    (id=30) STRING_REGEX           → field must match regex
+    (id=40) REQUIRED_IF_FIELD_EQUALS → Si otro campo vale X este campo es obligatorio
+'/
+
+class ValidationRuleTypeCompatibility {
+    +id: Integer
+    +validation_rule_type_id: Integer
+    +lead_field_type_id: Integer
+}
+
+/'
+    Ejemplos:
+
+    id:1
+    validation_rule_type_id:1 (NUMBER_MIN)
+    lead_field_type_id:3 (Número)
+
+'/
+
+
+'==========================
+' GRUPOS / SEGMENTOS
+'==========================
+
+class Campaign {
+    +id: Integer
+    +name: String
+    +description: String?
+    +parent_Campaign_id: Integer?
+    +created_at: DateTime
+    +updated_at: DateTime
+}
+
+/'
+    Ejemplos:
+    id:1
+    name: "Expo Educativa 2024"
+    description: "Leads capturados en la Expo Educativa 2024"
+    parent_Campaign_id: 2
+    created_at: "2024-05-01 10:00:00"
+    updated_at: "2024-05-01 10:00:00"
+
+    Ejemplos:
+    id:2
+    name: "Clientes VIP"
+    description: "Leads con estatus VIP"
+    parent_Campaign_id: null
+    created_at: "2024-05-01 10:00:00"
+    updated_at: "2024-05-01 10:00:00"
+
+'/
+
+class CampaignMembership {
+    +id: Integer
+    +lead_id: Integer
+    +Campaign_id: Integer
+    +assigned_by: Integer?   ' user id who assigned
+    +assigned_at: DateTime
+}
+
+/'
+    Ejemplos:
+    id:1
+    lead_id:15
+    Campaign_id:1
+    assigned_by: 3
+    assigned_at: "2024-06-15 14:30:00"
+'/
+
+'==========================================================
+'                          NOMENCLADORES
+'==========================================================
+
+class Nomenclator{
+    +id
+    +name
+    +description
+    +is_global (bool)         -- si es verdadero, no pertenece a ninguna campaña
+    +created_by_user_id
+    +created_at
+}
+/'
+    Ejemplos:
+    id:1
+    name: "Países"
+    description: "Lista de países para selección en formularios"
+    is_global: true
+    created_by_user_id: 2
+    created_at: "2024-07-01 09:00:00"
+
+    Ejemplos:
+    id:2
+    name: "Provincias"
+    description: "Lista de países para selección en formularios"
+    is_global: true
+    created_by_user_id: 2
+    created_at: "2024-07-01 09:00:00"
+'/
+
+class NomenclatorItem{
+    +id
+    +code 
+    +nomenclator_id
+    +value        
+    +parent_item_id    -- para jerarquías (p.e Provincias → Ciudades)
+    +order_index
+    +is_active
+}
+
+/'
+    Ejemplos:
+    id:1
+    code: "AR"
+    nomenclator_id: 1 (Países)
+    value: "Argentina"
+    parent_item_id: null
+    order_index: 1
+    is_active: true
+
+    Ejemplos:
+    id:10
+    code: "BA"
+    nomenclator_id: 2 (Provincias)
+    value: "Buenos Aires"
+    parent_item_id: 1 (Argentina)
+    order_index: 1
+    is_active: true
+'/
+
+class CampaignNomenclatorFilter{
+    +id
+    +campaign_id
+    +nomenclator_id
+    filter_mode     -- ALL, ONLY_SELECTED, EXCLUDE_SELECTED
+}
+
+/'
+    Ejemplos:
+    id:1
+    campaign_id: 1 (Expo Educativa 2024)
+    nomenclator_id: 1 (Países)
+    filter_mode: "ONLY_SELECTED"
+
+    Ejemplos:
+    id:2
+    campaign_id: 1 (Expo Educativa 2024)
+    nomenclator_id: 2 (Provincias)
+    filter_mode: "EXCLUDE_SELECTED"
+'/
+
+class CampaignNomenclatorItem{
+    id
+    campaign_nomenclator_filter_id
+    nomenclator_item_id
+}
+
+/'
+    Ejemplos:
+    id:1
+    campaign_nomenclator_filter_id: 1
+    nomenclator_item_id: 1 (Argentina)
+'/
+
+'==========================================================
+'                          RELACIONES
+'==========================================================
+
+Lead "1" --> "*" LeadFieldValue
+LeadFieldValue "*" --> "1" Lead
+LeadFieldValue "*" --> "1" LeadField
+LeadField "1" --> "1" LeadFieldType
+LeadField --> "0..1" FileType : tiene >
+
+' ValidationRule relations
+ValidationRule "*" --> "1" ValidationRuleType : usa >
+ValidationRule "*" --> "1" LeadField : valida >
+ValidationRule "*" --> "0..1" LeadField : compara_con >
+
+ValidationRuleTypeCompatibility "*" --> "1" ValidationRuleType : permite >
+ValidationRuleTypeCompatibility "*" --> "1" LeadFieldType : aplica_a >
+
+' Lead <-> Campaign (many-to-many via membership)
+Lead "*" --> "*" Campaign : pertenece_a >
+Campaign "*" --> "*" Lead : contiene >
+
+' explicit membership class relations
+CampaignMembership "*" --> "1" Lead
+CampaignMembership "*" --> "1" Campaign
+Campaign "1" --> "*" LeadField : define >
+
+' Campaign hierarchy (self-reference)
+Campaign "0..1" --> "0..*" Campaign : parent >
+
+' Nomenclator relations
+LeadField "*" --> "0..1" Nomenclator : usa >
+NomenclatorItem "*" --> "1" Nomenclator : pertenece_a >
+CampaignNomenclatorFilter "*" --> "1" Campaign : para >
+CampaignNomenclatorFilter "*" --> "1" Nomenclator : filtra >
+CampaignNomenclatorItem "*" --> "1" CampaignNomenclatorFilter : pertenece_a >
+CampaignNomenclatorItem "*" --> "1" NomenclatorItem : incluye >
+
+
+@enduml
