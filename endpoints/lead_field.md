@@ -2,7 +2,6 @@
 
 ### Descripción
 Trae el listado de campos de leads activos.
----
 
 ## Params
 only_active=[True|False] -> Si queremos traer todos los que existen se coloca en False. 
@@ -12,7 +11,6 @@ only_active=[True|False] -> Si queremos traer todos los que existen se coloca en
 
 ### Descripción
 Crea un campo de lead
----
 
 ### Request (Body)
 ```json
