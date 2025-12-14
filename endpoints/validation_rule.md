@@ -1,4 +1,3 @@
-```markdown
 # 📚 API Reference: Reglas de Validación (`/validation_rules`)
 
 El recurso `validation_rules` permite gestionar la lógica de validación dinámica aplicada a los campos de los Leads (`LeadField`). Estas reglas pueden ser expresiones personalizadas (Modo Experto) o basarse en plantillas predefinidas (Modo Asistente).
@@ -129,7 +128,5 @@ Devuelve el catálogo de plantillas (`STANDARD_RULES`) disponibles en el sistema
 ---
 
 ###🟩 `PUT /validation_rules/active/{id}`Restaura una regla previamente desactivada, volviendo a poner `is_active = true`.
-
-```
 
 ```
