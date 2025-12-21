@@ -52,7 +52,7 @@ Crea un nuevo nomenclador.
 ---
 
 ### 🟧 `PUT /nomenclators/{id}`  
-Actualiza la configuración básica de un nomenclador existente (Nombre, valor por defecto, etc.).
+Actualiza la configuración básica de un nomenclador existente.
 
 **Body:**
 
