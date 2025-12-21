@@ -1,4 +1,4 @@
-# 🗂️ API Reference: Nomenclador (`/nomenclator_items`)
+# 🗂️ API Reference: NomencladorItem (`/nomenclator_items`)
 
 El recurso `nomenclator_items` administra los items de las entidades que pueden ser usadas en los LeadFieldValue. Por ejemplo Mendoza, San Juan, etc
 
