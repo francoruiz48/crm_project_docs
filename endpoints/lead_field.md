@@ -76,13 +76,13 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
 
 ```json
 {
-  "name": "Cantidad de Hijos",
-  "field_type_code": "INT",
-  "default_value": "0",
-  "is_primary": false,
-  "required": true
+    "name": "Patente",
+    "required": false,
+    "is_primary": false,
+    "input_mask": "AAA-###", 
+    "campaign_id": 1,
+    "field_type_code": "STRING"
 }
-
 ```
 
 | Campo | Tipo | Obligatorio | Descripción |
@@ -90,10 +90,20 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
 | `name` | `str` | Sí* | Nombre visible del campo (Label). (*Opcional si se usa plantilla). |
 | `field_type_code` | `str` | Sí* | Tipo de dato (`STRING`, `INT`, `DATE`, `BOOL`). (*Opcional si se usa plantilla). |
 | `default_value` | `str` | No | Valor por defecto si el usuario no completa nada. |
-| `is_primary` | `bool` | No | `true` si es un campo principal/destacado en la UI. |
+| `is_primary` | `bool` | No | `true` se valida para evitar repetidos y funciona como identificador, pueden definirse más de un field con este valor en True. |
 | `required` | `bool` | No | `true` si el campo es obligatorio. |
+| `input_mask` | `str` | No | Indica si la entrada debe cumplir un formato.  |
 
 ---
+
+La forma de especificar "input_mask" es:
+```
+# -> Número (\d)
+A -> Letra ([a-zA-Z])
+* -> Alfanumérico ([a-zA-Z0-9])
+Cualquier otro caracter se trata como literal (ej: -, (, ), .)
+```
+En el caso de "AAA-###" indica que los primeros tres caracteres deben ser letras, luego un guion medio y luego tres números.
 
 ### 🟧 `PUT /lead_fields/{id}`  
 Actualiza la configuración básica de un campo existente (Nombre, valor por defecto, etc.).
