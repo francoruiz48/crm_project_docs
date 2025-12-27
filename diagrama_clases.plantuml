@@ -8,9 +8,8 @@ class Lead {
     +id: Integer
     +created_at: DateTime
     +updated_at: DateTime
+    +campaign_id: Integer
     +field_values: List<LeadFieldValue>
-
-    
 }
 
 /'
@@ -27,6 +26,7 @@ class LeadField {
     +required: Boolean
     +default_value: String
     +primary: Boolean
+    +campaign_id: Integer
     +field_values: List<LeadFieldValue>
     +nomenclator_id (nullable)
     +file_type_id (nullable) 
@@ -81,89 +81,29 @@ class LeadFieldType {
 class ValidationRule {
     +id: Integer
     +name: String
-    +rule_type_id: Integer
-    +field_id: Integer
-    +related_field_id: Integer?
-    +static_value: String?
-    +min_value: Float?
-    +max_value: Float?
-    +min_length: Integer?
-    +max_length: Integer?
-    +regex: String?
-    +date_from: Date?
-    +date_to: Date?
+    +expression: String
+    +error_message: String
+    +template_code: String
+    +template_params: String
+    +field: LeadField
 }
-
-/'
-    EJEMPLOS DE VALIDACIONES:
-
-    1) Validación entre campos:
-       name = "Fecha desde < Fecha hasta"
-       rule_type_id = 10 (DATE_LESS_THAN_FIELD)
-       field_id = 1 (fecha_desde)
-       related_field_id = 2 (fecha_hasta)
-
-    2) Fecha mayor a hoy:
-       name = "Fecha desde mayor a hoy"
-       rule_type_id = 11 (DATE_GREATER_THAN_TODAY)
-       field_id = 1
-       static_value = null
-
-    3) Número mínimo:
-       name = "Monto total mínimo"
-       rule_type_id = 3 (NUMBER_MIN)
-       field_id = 3 (monto_total)
-       min_value = 100.00
-
-    4) Texto con longitud mínima:
-       name = "Descripción longitud mínima"
-       rule_type_id = 20 (STRING_MIN_LENGTH)
-       field_id = 4 (descripcion)
-       min_length = 10
-
-    5) Regex:
-       name = "Formato DNI"
-       rule_type_id = 30 (STRING_REGEX)
-       field_id = 5 (dni)
-       regex = "^[0-9]{8}$"
-'/
-
-class ValidationRuleType {
-    +id: Integer
-    +name: String
-    +description: String
-
-}
-
 /'
     Ejemplos:
+    id=1
+    name="Fecha Desde Antes de Fecha Hasta"
+    expression="value < fields[2]"
+    error_message="La fecha 'Desde' debe ser anterior a la fecha 'Hasta'."
+    template_code= null
+    template_params=null
+    field: LeadField(id=1, name="fecha_desde")
 
-    (id=1) NUMBER_MIN              → El valor debe ser >= min_value
-    (id=2) NUMBER_MAX              → El valor debe ser <= max_value
-    (id=10) DATE_LESS_THAN_FIELD   → field < related_field
-    (id=11) DATE_GREATER_THAN_TODAY→ field > current_date
-    (id=20) STRING_MIN_LENGTH      → length(field) >= min_length
-    (id=21) STRING_MAX_LENGTH      → length(field) <= max_length
-    (id=30) STRING_REGEX           → field must match regex
-    (id=40) REQUIRED_IF_FIELD_EQUALS → Si otro campo vale X este campo es obligatorio
+    id=2
+    name="Monto Total Positivo"
+    expression="value > 0"
+    error_message="El monto total debe ser un valor positivo."
+    template_code= "MIN_NUMBER"
+    template_params={"min":0}
 '/
-
-class ValidationRuleTypeCompatibility {
-    +id: Integer
-    +validation_rule_type_id: Integer
-    +lead_field_type_id: Integer
-}
-
-/'
-    Ejemplos:
-
-    id:1
-    validation_rule_type_id:1 (NUMBER_MIN)
-    lead_field_type_id:3 (Número)
-
-'/
-
-
 '==========================
 ' GRUPOS / SEGMENTOS
 '==========================
@@ -196,22 +136,6 @@ class Campaign {
 
 '/
 
-class CampaignMembership {
-    +id: Integer
-    +lead_id: Integer
-    +Campaign_id: Integer
-    +assigned_by: Integer?   ' user id who assigned
-    +assigned_at: DateTime
-}
-
-/'
-    Ejemplos:
-    id:1
-    lead_id:15
-    Campaign_id:1
-    assigned_by: 3
-    assigned_at: "2024-06-15 14:30:00"
-'/
 
 '==========================================================
 '                          NOMENCLADORES
@@ -224,6 +148,7 @@ class Nomenclator{
     +is_global (bool)         -- si es verdadero, no pertenece a ninguna campaña
     +created_by_user_id
     +created_at
+    +campaign_id
 }
 /'
     Ejemplos:
@@ -251,6 +176,7 @@ class NomenclatorItem{
     +parent_item_id    -- para jerarquías (p.e Provincias → Ciudades)
     +order_index
     +is_active
+    +parent_nomenclator
 }
 
 /'
@@ -273,66 +199,22 @@ class NomenclatorItem{
     is_active: true
 '/
 
-class CampaignNomenclatorFilter{
-    +id
-    +campaign_id
-    +nomenclator_id
-    filter_mode     -- ALL, ONLY_SELECTED, EXCLUDE_SELECTED
-}
-
-/'
-    Ejemplos:
-    id:1
-    campaign_id: 1 (Expo Educativa 2024)
-    nomenclator_id: 1 (Países)
-    filter_mode: "ONLY_SELECTED"
-
-    Ejemplos:
-    id:2
-    campaign_id: 1 (Expo Educativa 2024)
-    nomenclator_id: 2 (Provincias)
-    filter_mode: "EXCLUDE_SELECTED"
-'/
-
-class CampaignNomenclatorItem{
-    id
-    campaign_nomenclator_filter_id
-    nomenclator_item_id
-}
-
-/'
-    Ejemplos:
-    id:1
-    campaign_nomenclator_filter_id: 1
-    nomenclator_item_id: 1 (Argentina)
-'/
-
 '==========================================================
 '                          RELACIONES
 '==========================================================
 
-Lead "1" --> "*" LeadFieldValue
-LeadFieldValue "*" --> "1" Lead
+LeadFieldValue "*" <--> "1" Lead
 LeadFieldValue "*" --> "1" LeadField
 LeadField "1" --> "1" LeadFieldType
 LeadField --> "0..1" FileType : tiene >
+LeadFieldValue "*" --> "1" NomenclatorItem
 
 ' ValidationRule relations
-ValidationRule "*" --> "1" ValidationRuleType : usa >
 ValidationRule "*" --> "1" LeadField : valida >
-ValidationRule "*" --> "0..1" LeadField : compara_con >
-
-ValidationRuleTypeCompatibility "*" --> "1" ValidationRuleType : permite >
-ValidationRuleTypeCompatibility "*" --> "1" LeadFieldType : aplica_a >
-
-' Lead <-> Campaign (many-to-many via membership)
-Lead "*" --> "*" Campaign : pertenece_a >
-Campaign "*" --> "*" Lead : contiene >
 
 ' explicit membership class relations
-CampaignMembership "*" --> "1" Lead
-CampaignMembership "*" --> "1" Campaign
-Campaign "1" --> "*" LeadField : define >
+Lead "*" --> "1" Campaign
+Campaign "1" <-- "*" LeadField : define >
 
 ' Campaign hierarchy (self-reference)
 Campaign "0..1" --> "0..*" Campaign : parent >
@@ -340,10 +222,9 @@ Campaign "0..1" --> "0..*" Campaign : parent >
 ' Nomenclator relations
 LeadField "*" --> "0..1" Nomenclator : usa >
 NomenclatorItem "*" --> "1" Nomenclator : pertenece_a >
-CampaignNomenclatorFilter "*" --> "1" Campaign : para >
-CampaignNomenclatorFilter "*" --> "1" Nomenclator : filtra >
-CampaignNomenclatorItem "*" --> "1" CampaignNomenclatorFilter : pertenece_a >
-CampaignNomenclatorItem "*" --> "1" NomenclatorItem : incluye >
+Nomenclator "*" --> "1" Campaign : para >
+Nomenclator --> Nomenclator : pertenece
+NomenclatorItem --> NomenclatorItem : pertenece
 
 
 @enduml
