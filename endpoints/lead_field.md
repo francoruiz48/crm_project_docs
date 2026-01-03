@@ -61,7 +61,11 @@ Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de
 
 ```json
 {
-  "field_template_code": "PASSWORD_STRONG"
+  "field_template_code": "FIRST_NAME",
+  "campaign_id": 1,
+  "order": 1,
+  "required": true,
+  "is_primary": false
 }
 
 ```
@@ -81,7 +85,8 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
     "is_primary": false,
     "input_mask": "AAA-###", 
     "campaign_id": 1,
-    "field_type_code": "STRING"
+    "field_type_code": "STRING",
+    "order": 1
 }
 ```
 
@@ -93,6 +98,8 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
 | `is_primary` | `bool` | No | `true` se valida para evitar repetidos y funciona como identificador, pueden definirse más de un field con este valor en True. |
 | `required` | `bool` | No | `true` si el campo es obligatorio. |
 | `input_mask` | `str` | No | Indica si la entrada debe cumplir un formato.  |
+| `order` | `int` | Si | Orden en que se muestran el campo |
+| `campaign_id` | `int` | Si | Campaña a la cual pertenece el campo |
 
 ---
 
