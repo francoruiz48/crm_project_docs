@@ -7,13 +7,13 @@ El recurso `campaigns` administra las camapañas. Las campañas sirven para agru
 ## 🟢 Endpoints de Lectura
 
 ### 🟦 `GET /campaigns`
-Obtiene el listado de tipos de datos configurados en el sistema.
+Obtiene el listado de campañas que hay en el sistema.
 
 **Parámetros (Query Params)**
 
 | Parámetro | Tipo | Default | Descripción |
 | :--- | :--- | :--- | :--- |
-| `only_active` | `bool` | `true` | Si es `true`, devuelve solo los tipos de datos activos (visibles en formularios). Si es `false`, incluye también los deshabilitados. |
+| `only_active` | `bool` | `true` | Si es `true`, devuelve solo las campañas activas. Si es `false`, incluye también los deshabilitados. |
 | `detailed` | `bool` | `false` | Si es `true`, devuelve el mayor detalle de la campaña |
 
 ---
