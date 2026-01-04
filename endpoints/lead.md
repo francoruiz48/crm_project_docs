@@ -51,7 +51,8 @@ Crea un nuevo lead.
 | --- | --- | --- | --- |
 | `campaign_id` | `int` | Si* | Campaña a la cual pertenece, solo puede pertencer a una |
 | `field_id` | `int` | Si | Se indica el id del campo. |
-| `value` | `Depende del field_type_code de lead_field` | Si | Se indica el valor del campo. |
+| `value` | `str` | Si | Se indica el valor del campo. |
+| `nomenclator_item_id` | `int` | No | Se indica el valor del id del nomenclador_item |
 
 ---
 En los casos donde se utilicen los nomencladores como lead_field se utiliza "nomenclator_item_id", en vez de "value"
