@@ -54,7 +54,7 @@ Devuelve el catálogo de plantillas de campos (`STANDARD_FIELD_TEMPLATES`).
 ### 🟩 `POST /lead_fields`  
 Crea un nuevo campo para los Leads. Existen dos formas de hacerlo:
 
-#### **Opción A: Creación por Plantilla (Recomendado)**   
+#### **Opción A: Creación por Plantilla**   
 Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de dato y crea automáticamente las reglas de validación (ej: Regex de email).
 
 **Body:**
@@ -86,6 +86,20 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
     "input_mask": "AAA-###", 
     "campaign_id": 1,
     "field_type_code": "STRING",
+    "order": 1
+}
+```
+
+Tambien podemos asociar un nomenclador a un field para poder utilizar el nomenclador con sus valores.
+
+**Body:**
+
+```json
+{
+    "nomenclator_id": 2,
+    "required": false,
+    "is_primary": false,
+    "campaign_id": 1,
     "order": 1
 }
 ```
