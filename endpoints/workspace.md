@@ -19,37 +19,35 @@ Obtiene el listado de workspaces que hay.
 ---
 
 ### 🟦 `GET /workspaces/{id}`
-Obtiene el detalle de una sola campaña por su ID.
+Obtiene el detalle de un solo workspace por su ID.
 
 **Parámetros (Path)**
-* `id` (int): ID único de la campaña.
+* `id` (int): ID único
 ---
 
 ## 🟠 Endpoints de Escritura  
 ### 🟩 `POST /workspaces`  
-Crea una nueva campaña.
+Crea un nuevo workspace.
 
 **Body:**
 
 ```json
 {
-  "name": "iGV Youth",
-  "description": "iGV Youth",
-  "workspace_id": 1
+  "name": "Equipo X",
+  "description": "Equipo de ejemplo"
 }
 
 ```
 
 | Campo | Tipo | Obligatorio | Descripción |
 | --- | --- | --- | --- |
-| `name` | `str` | Sí* | Nombre de la campaña |
-| `description` | `str` | No | Descripción de la campaña |
-| `workspace_id` | `int` | Si | Se indica el id del workspace al que pertenece la campaña |
+| `name` | `str` | Sí* | Nombre del workspace |
+| `description` | `str` | No | Descripción del workspace |
 
 ---
 
 ### 🟧 `PUT /workspaces/{id}`  
-Actualiza la información de una campaña
+Actualiza la información de un workspace
 
 **Body:**
 
@@ -57,7 +55,6 @@ Actualiza la información de una campaña
 {
   "name": "iGV Youth",
   "description": "iGV Youth",
-  "workspace_id": 2
 }
 ```
 
@@ -65,22 +62,22 @@ Actualiza la información de una campaña
 
 ## 🔴 Endpoints de Estado y Borrado###🟥 
 `DELETE /workspaces/{id}`  
-Elimina físicamente la campaña junto con sus leads, y workspaces asociados.
+Elimina físicamente el wokspace junto con sus campañas asociadas, y su vez borra los leads de los campañas. 
 
 ---
 
 ### 🟧 `PUT /workspaces/disable/{id}`  
 Desactivación lógica (Soft Delete).
 
-* La campaña deja de ser visible
+* El workspace deja de ser visible
 * Los datos históricos se conservan.
 
 ---
 
 ### 🟩 `PUT /workspaces/active/{id}`  
-Restaura una campaña previamente desactivado.
+Restaura un workspace previamente desactivado.
 
-* La campaña vuelve a ser visible y operativa.
+* El workspace vuelve a ser visible y operativa.
 
 ```
 
