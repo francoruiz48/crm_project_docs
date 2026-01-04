@@ -27,6 +27,51 @@ Obtiene el detalle de un solo lead por su ID.
 
 ---
 
+### 🟦 `POST /leads/search`
+Realizar busqueda de leads por medio de filtros. Se envia un arreglo de filtros. 
+
+**Body:**
+
+```json
+{
+  "filters": [
+    {
+      "field_id": 4,
+      "operator": "gte",
+      "value": "2000-01-01"
+    },
+    {
+      "field_id": 1,
+      "operator": "like",
+      "value": "r"
+    }
+  ]
+}
+```
+
+| Campo | Tipo | Obligatorio | Descripción |
+| --- | --- | --- | --- |
+| `field_id` | `int` | Si* | Indica el field al cual se le aplica el filtro|
+| `operator` | `str` | Si | Operador para realizar la busqueda |
+| `value` | `str` | Si | Indica el valor con el cual se realiza la operación |
+
+Los operadores disponbiles son:
+
+| Operador | Descripción |
+| --- | --- |
+| `eq` | Igual (=) |
+| `neq` | No igual (!=) |
+| `gt` | Mayor que (>) |
+| `lt` | Menor que (<) |
+| `gte` | Mayor o igual (>=) |
+| `let` | Menor o igual (<=) |
+| `like` | Contiene (texto) |
+| `ilike` | Contiene (texto, ignora mayusculas) |
+| `in` | Lista de opciones |
+| `between` | Entres dos valores (rangos) |
+
+---
+
 ## 🟠 Endpoints de Escritura  
 ### 🟩 `POST /leads`  
 Crea un nuevo lead.
