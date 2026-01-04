@@ -12,33 +12,20 @@ class Lead {
     +field_values: List<LeadFieldValue>
 }
 
-/'
-    Ejemplos:
-    id = 15
-    created_at = "2025-01-10 12:33:00"
-    updated_at = "2025-01-10 12:33:00"
-'/
-
 class LeadField {
     +id: Integer
     +name: String
-    +field_type_id: Integer
+    +field_type_code: Integer
     +required: Boolean
     +default_value: String
-    +primary: Boolean
+    +is_primary: Boolean
+    +input_mask: String
+    +order: Integer
     +campaign_id: Integer
     +field_values: List<LeadFieldValue>
     +nomenclator_id (nullable)
-    +file_type_id (nullable) 
+    +validation_rules: List<ValidationRule>
 }
-
-/'
-    Ejemplos:
-    id = 1, name = "fecha_desde", field_type_id = 2 (DATE)
-    id = 2, name = "fecha_hasta", field_type_id = 2 (DATE)
-    id = 3, name = "monto_total", field_type_id = 3 (NUMBER)
-    id = 4, name = "descripcion", field_type_id = 1 (TEXT)
-'/
 
 class FileType{
     +id
@@ -52,27 +39,12 @@ class LeadFieldValue {
     +value: String
 }
 
-/'
-    Ejemplos:
-    lead_id=15, field_id=1 (fecha_desde), value="2025-02-01"
-    lead_id=15, field_id=2 (fecha_hasta), value="2025-02-10"
-    lead_id=15, field_id=3 (monto_total), value="1500.50"
-'/
-
 class LeadFieldType {
     +id: Integer
     +name: String
     +data_type: Enum
 
 }
-
-/'
-    Ejemplos:
-    id=1, name="Texto", data_type="STRING"
-    id=2, name="Fecha", data_type="DATE"
-    id=3, name="Número", data_type="NUMBER"
-    id=4, name="Lista", data_type="ENUM"
-'/
 
 '==========================================================
 '        VALIDACIONES CONFIGURADAS POR EL USUARIO
@@ -87,23 +59,6 @@ class ValidationRule {
     +template_params: String
     +field: LeadField
 }
-/'
-    Ejemplos:
-    id=1
-    name="Fecha Desde Antes de Fecha Hasta"
-    expression="value < fields[2]"
-    error_message="La fecha 'Desde' debe ser anterior a la fecha 'Hasta'."
-    template_code= null
-    template_params=null
-    field: LeadField(id=1, name="fecha_desde")
-
-    id=2
-    name="Monto Total Positivo"
-    expression="value > 0"
-    error_message="El monto total debe ser un valor positivo."
-    template_code= "MIN_NUMBER"
-    template_params={"min":0}
-'/
 '==========================
 ' GRUPOS / SEGMENTOS
 '==========================
@@ -113,28 +68,17 @@ class Campaign {
     +name: String
     +description: String?
     +parent_Campaign_id: Integer?
-    +created_at: DateTime
-    +updated_at: DateTime
+    +workspace_id: Integer
+    +leads: List<Lead>
+    +nomenclators: List<Nomenclator>
 }
 
-/'
-    Ejemplos:
-    id:1
-    name: "Expo Educativa 2024"
-    description: "Leads capturados en la Expo Educativa 2024"
-    parent_Campaign_id: 2
-    created_at: "2024-05-01 10:00:00"
-    updated_at: "2024-05-01 10:00:00"
-
-    Ejemplos:
-    id:2
-    name: "Clientes VIP"
-    description: "Leads con estatus VIP"
-    parent_Campaign_id: null
-    created_at: "2024-05-01 10:00:00"
-    updated_at: "2024-05-01 10:00:00"
-
-'/
+class Workspace {
+    +id: Integer
+    +name: String
+    +description: String?
+    +campaigns: List<Campaign>
+}
 
 
 '==========================================================
@@ -142,62 +86,21 @@ class Campaign {
 '==========================================================
 
 class Nomenclator{
-    +id
-    +name
-    +description
-    +is_global (bool)         -- si es verdadero, no pertenece a ninguna campaña
-    +created_by_user_id
-    +created_at
-    +campaign_id
+    +id: Integer
+    +name: String
+    +description: String
+    +campaign: Campaign
+    +parent_nomenclator: Nomenclator
 }
-/'
-    Ejemplos:
-    id:1
-    name: "Países"
-    description: "Lista de países para selección en formularios"
-    is_global: true
-    created_by_user_id: 2
-    created_at: "2024-07-01 09:00:00"
-
-    Ejemplos:
-    id:2
-    name: "Provincias"
-    description: "Lista de países para selección en formularios"
-    is_global: true
-    created_by_user_id: 2
-    created_at: "2024-07-01 09:00:00"
-'/
 
 class NomenclatorItem{
-    +id
-    +code 
-    +nomenclator_id
-    +value        
-    +parent_item_id    -- para jerarquías (p.e Provincias → Ciudades)
-    +order_index
-    +is_active
-    +parent_nomenclator
+    +id: Integer
+    +code: String
+    +value: String
+    +parent_item_id: Integer
+    +nomenclator_id: Integer
 }
 
-/'
-    Ejemplos:
-    id:1
-    code: "AR"
-    nomenclator_id: 1 (Países)
-    value: "Argentina"
-    parent_item_id: null
-    order_index: 1
-    is_active: true
-
-    Ejemplos:
-    id:10
-    code: "BA"
-    nomenclator_id: 2 (Provincias)
-    value: "Buenos Aires"
-    parent_item_id: 1 (Argentina)
-    order_index: 1
-    is_active: true
-'/
 
 '==========================================================
 '                          RELACIONES
@@ -215,9 +118,7 @@ ValidationRule "*" --> "1" LeadField : valida >
 ' explicit membership class relations
 Lead "*" --> "1" Campaign
 Campaign "1" <-- "*" LeadField : define >
-
-' Campaign hierarchy (self-reference)
-Campaign "0..1" --> "0..*" Campaign : parent >
+Campaign "*" --> "1" Workspace
 
 ' Nomenclator relations
 LeadField "*" --> "0..1" Nomenclator : usa >
@@ -225,6 +126,7 @@ NomenclatorItem "*" --> "1" Nomenclator : pertenece_a >
 Nomenclator "*" --> "1" Campaign : para >
 Nomenclator --> Nomenclator : pertenece
 NomenclatorItem --> NomenclatorItem : pertenece
+
 
 
 @enduml
