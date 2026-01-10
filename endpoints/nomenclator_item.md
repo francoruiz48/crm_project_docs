@@ -70,17 +70,12 @@ Actualiza la información de un item de nomenclador existente.
 
 ## 🔴 Endpoints de Estado y Borrado###🟥 
 `DELETE /nomenclator_items/{id}`  
-Elimina físicamente el item de nomenclador.
+Elimina físicamente el nomenclador_item.
+
+Si creamos al menos un lead y le asociamos este nomenclator_item entonces al ejecutar el endpoint funcionara como un soft delete, es decir cambiara el atributo `active` a false. Esto significa que dejara de estar operativo.
 
 ---
 
-### 🟧 `PUT /nomenclator_items/disable/{id}`  
-Desactivación lógica (Soft Delete).
-
-* El nomenclador item deja de aparecer en los formularios.
-* Los datos históricos se conservan.
-
----
 
 ### 🟩 `PUT /nomenclator_items/active/{id}`  
 Restaura un nomenclador item previamente desactivado.
