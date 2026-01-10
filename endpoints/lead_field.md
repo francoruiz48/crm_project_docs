@@ -14,6 +14,8 @@ Obtiene el listado de campos configurados en el sistema.
 | Parámetro | Tipo | Default | Descripción |
 | :--- | :--- | :--- | :--- |
 | `only_active` | `bool` | `true` | Si es `true`, devuelve solo los campos activos (visibles en formularios). Si es `false`, incluye también los deshabilitados. |
+| `campaign_id` | `int` | `null` | Se indica el ID de la campaña para filtrar por esta. |
+| `detailed` | `bool` | `False` | Si es `true`, devuelve todo el detalle de los campos. |
 
 ---
 
@@ -65,7 +67,9 @@ Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de
   "campaign_id": 1,
   "order": 1,
   "required": true,
-  "is_primary": false
+  "is_primary": false,
+  "is_visible": True,
+  "lead_field_section_id": 1
 }
 
 ```
@@ -86,7 +90,8 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
     "input_mask": "AAA-###", 
     "campaign_id": 1,
     "field_type_code": "STRING",
-    "order": 1
+    "order": 1,
+    "lead_field_section_id": 1
 }
 ```
 
@@ -97,10 +102,13 @@ Tambien podemos asociar un nomenclador a un field para poder utilizar el nomencl
 ```json
 {
     "nomenclator_id": 2,
+    "field_type_code": "SELECTOR", //Puede ser tambien CHECKBOX
+    "field_subtype_code": "SELECTOR_MULTIPLE", //Obligatorio si es un nomenclador. Si es checkbox usamos CHECKBOX_MULTIPLE
     "required": false,
     "is_primary": false,
     "campaign_id": 1,
-    "order": 1
+    "order": 1,
+    "lead_field_section_id": 1
 }
 ```
 
@@ -112,8 +120,11 @@ Tambien podemos asociar un nomenclador a un field para poder utilizar el nomencl
 | `is_primary` | `bool` | No | `true` se valida para evitar repetidos y funciona como identificador, pueden definirse más de un field con este valor en True. |
 | `required` | `bool` | No | `true` si el campo es obligatorio. |
 | `input_mask` | `str` | No | Indica si la entrada debe cumplir un formato.  |
-| `order` | `int` | Si | Orden en que se muestran el campo |
+| `order` | `int` | Si | Orden en que se muestran el campo. |
 | `campaign_id` | `int` | Si | Campaña a la cual pertenece el campo |
+| `is_visible` | `bool` | No | Por defecto es `true`, esta para ser utilizado en el front. |
+| `field_subtype_code` | `str` | Depende | Se especifica obligatoriamente si usamos un tipo de dato que tiene subtipo. |
+| `lead_field_section_id` | `int` | Si | Se especifica la sección a la cual pertenece. |
 
 ---
 
@@ -129,12 +140,19 @@ En el caso de "AAA-###" indica que los primeros tres caracteres deben ser letras
 ### 🟧 `PUT /lead_fields/{id}`  
 Actualiza la configuración básica de un campo existente (Nombre, valor por defecto, etc.).
 
+Hay que enviar si o si todos los campos obligatorios. (los que se indican en la tabla anterior).
+
 **Body:**
 
 ```json
-{
-  "name": "Email Personal",
-  "required": true
+{   
+    "name": "Nombre",
+    "field_type_code": "STRING",
+    "campaign_id": 2,
+    "order": 2,
+    "required": false,
+    "is_primary": false,
+    "lead_field_section_id": 1
 }
 
 ```
@@ -143,17 +161,9 @@ Actualiza la configuración básica de un campo existente (Nombre, valor por def
 
 ## 🔴 Endpoints de Estado y Borrado###🟥 
 `DELETE /lead_fields/{id}`  
-Elimina físicamente el campo y **todas sus validaciones asociadas**.
+Elimina físicamente el campo y tambien `validation_rule` asociados
 
-> ⚠️ **Cuidado:** Esto también borrará los valores (`LeadValue`) guardados en los leads para este campo.
-
----
-
-### 🟧 `PUT /lead_fields/disable/{id}`  
-Desactivación lógica (Soft Delete).
-
-* El campo deja de aparecer en los formularios y listados de Leads activos.
-* Los datos históricos se conservan.
+Si creamos al menos un lead de la misma campaña entonces al ejecutar el endpoint era un soft delete, es decir cambiara el atributo `active` a `false`
 
 ---
 
