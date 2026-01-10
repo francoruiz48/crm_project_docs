@@ -69,15 +69,10 @@ Actualiza la configuración básica de un nomenclador existente.
 
 ## 🔴 Endpoints de Estado y Borrado###🟥 
 `DELETE /nomenclators/{id}`  
-Elimina físicamente el nomenclador y sus nomenclators items asociados.
+Elimina físicamente el campo y tambien `nomenclator_items` asociados
 
----
+Si creamos al menos un campo y le asociamos este nomenclator entonces al ejecutar el endpoint funcionara como un soft delete, es decir cambiara el atributo `active` a false.
 
-### 🟧 `PUT /nomenclators/disable/{id}`  
-Desactivación lógica (Soft Delete).
-
-* El nomenclador deja de aparecer en los formularios.
-* Los datos históricos se conservan.
 
 ---
 
@@ -86,6 +81,3 @@ Restaura un nomenclador previamente desactivado.
 
 * El nomenclador vuelve a ser visible y operativo.
 
-```
-
-```
