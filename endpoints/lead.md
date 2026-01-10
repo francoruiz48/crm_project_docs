@@ -153,20 +153,3 @@ Actualiza la configuración básica de un lead existente.
 Elimina físicamente el lead y sus leadFieldValue asociados al lead.
 
 ---
-
-### 🟧 `PUT /leads/disable/{id}`  
-Desactivación lógica (Soft Delete).
-
-* El lead deja de aparecer en las listas.
-* Los datos históricos se conservan.
-
----
-
-### 🟩 `PUT /leads/active/{id}`  
-Restaura un lead previamente desactivado.
-
-* El lead vuelve a ser visible y operativo.
-
-```
-
-```
