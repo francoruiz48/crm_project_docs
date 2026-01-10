@@ -84,12 +84,10 @@ Crea un nuevo lead.
     "values": [
         { "field_id": 1, "value": "Juan" },
         { "field_id": 2, "value": "Ruiz" },
-        { "field_id": 3, "nomenclator_item_id": 2},
+        { "field_id": 3, "value": [2,3]}, //multiple nomenclator_items
         { "field_id": 5, "value": "GAD-234"}
     ]
 }
-
-
 ```
 
 | Campo | Tipo | Obligatorio | Descripción |
@@ -97,7 +95,37 @@ Crea un nuevo lead.
 | `campaign_id` | `int` | Si* | Campaña a la cual pertenece, solo puede pertencer a una |
 | `field_id` | `int` | Si | Se indica el id del campo. |
 | `value` | `str` | Si | Se indica el valor del campo. |
-| `nomenclator_item_id` | `int` | No | Se indica el valor del id del nomenclador_item |
+
+IMPORTANTE: el valor de `value` siempre debe ser especificado entre comillas, a excepción del caso de que sea un nomenclador_item que en ese caso debe ser un arreglo o un entero. Ejemplos:
+
+Si queremos guardar un entero entonces:
+```json
+{
+    "campaign_id": 1,
+    "values": [
+        { "field_id": 1, "value": "23" },
+    ]
+}
+```
+Si queremos guardar un nomenclator_item:
+```json
+{
+    "campaign_id": 1,
+    "values": [
+        { "field_id": 1, "value": 2 },
+    ]
+}
+```
+o en caso de ser multiples valores:
+```json
+{
+    "campaign_id": 1,
+    "values": [
+        { "field_id": 1, "value": [2,3,4,5] },
+    ]
+}
+```
+Donde `value` pasa a ser, en este caso, el id del o los nomenclator_items. 
 
 ---
 En los casos donde se utilicen los nomencladores como lead_field se utiliza "nomenclator_item_id", en vez de "value"
