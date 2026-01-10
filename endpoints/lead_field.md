@@ -68,7 +68,7 @@ Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de
   "order": 1,
   "required": true,
   "is_primary": false,
-  "is_visible": True,
+  "is_visible": true,
   "lead_field_section_id": 1
 }
 
@@ -120,11 +120,11 @@ Tambien podemos asociar un nomenclador a un field para poder utilizar el nomencl
 | `is_primary` | `bool` | No | `true` se valida para evitar repetidos y funciona como identificador, pueden definirse más de un field con este valor en True. |
 | `required` | `bool` | No | `true` si el campo es obligatorio. |
 | `input_mask` | `str` | No | Indica si la entrada debe cumplir un formato.  |
-| `order` | `int` | Si | Orden en que se muestran el campo. |
-| `campaign_id` | `int` | Si | Campaña a la cual pertenece el campo |
+| `order` | `int` | Si* | Orden en que se muestran el campo. |
+| `campaign_id` | `int` | Si* | Campaña a la cual pertenece el campo |
 | `is_visible` | `bool` | No | Por defecto es `true`, esta para ser utilizado en el front. |
 | `field_subtype_code` | `str` | Depende | Se especifica obligatoriamente si usamos un tipo de dato que tiene subtipo. |
-| `lead_field_section_id` | `int` | Si | Se especifica la sección a la cual pertenece. |
+| `lead_field_section_id` | `int` | Si* | Se especifica la sección a la cual pertenece. |
 
 ---
 
@@ -172,6 +172,4 @@ Restaura un campo previamente desactivado.
 
 * El campo vuelve a ser visible y operativo.
 
-```
-
-```
+---
