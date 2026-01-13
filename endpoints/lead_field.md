@@ -63,13 +63,14 @@ Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de
 
 ```json
 {
-  "field_template_code": "FIRST_NAME",
+  "name": "Patente", //Opcional
   "campaign_id": 1,
   "order": 1,
   "required": true,
   "is_primary": false,
   "is_visible": true,
   "lead_field_section_id": 1
+  "field_template_code": "FIRST_NAME",
 }
 
 ```
@@ -85,13 +86,13 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
 ```json
 {
     "name": "Patente",
+    "campaign_id": 1,
+    "order": 1,
     "required": false,
     "is_primary": false,
-    "input_mask": "AAA-###", 
-    "campaign_id": 1,
-    "field_type_code": "STRING",
-    "order": 1,
     "lead_field_section_id": 1
+    "field_type_code": "STRING",
+    "input_mask": "AAA-###", 
 }
 ```
 
@@ -101,14 +102,14 @@ Tambien podemos asociar un nomenclador a un field para poder utilizar el nomencl
 
 ```json
 {
+    "campaign_id": 1,
+    "order": 1,
+    "required": false,
+    "is_primary": false,
+    "lead_field_section_id": 1
     "nomenclator_id": 2,
     "field_type_code": "SELECTOR", //Puede ser tambien CHECKBOX
     "field_subtype_code": "SELECTOR_MULTIPLE", //Obligatorio si es un nomenclador. Si es checkbox usamos CHECKBOX_MULTIPLE
-    "required": false,
-    "is_primary": false,
-    "campaign_id": 1,
-    "order": 1,
-    "lead_field_section_id": 1
 }
 ```
 
