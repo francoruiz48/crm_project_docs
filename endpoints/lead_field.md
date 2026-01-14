@@ -81,6 +81,8 @@ Se envía el código de la plantilla. El sistema autocompleta el nombre, tipo de
 #### **Opción B: Creación Manual**  
 Se definen todos los atributos manualmente. No incluye validaciones automáticas (se deben agregar aparte en `/validation_rules`).
 
+Opción B.1. Establecemos un campo con input_mask (no es obligatorio).
+
 **Body:**
 
 ```json
@@ -96,7 +98,7 @@ Se definen todos los atributos manualmente. No incluye validaciones automáticas
 }
 ```
 
-Tambien podemos asociar un nomenclador a un field para poder utilizar el nomenclador con sus valores.
+Opción B.2. Creamos un campo que refiere a un nomenclador para poder establecer nomencladores items en sus campos.
 
 **Body:**
 
@@ -112,20 +114,56 @@ Tambien podemos asociar un nomenclador a un field para poder utilizar el nomencl
     "field_subtype_code": "SELECTOR_MULTIPLE", //Obligatorio si es un nomenclador. Si es checkbox usamos CHECKBOX_MULTIPLE
 }
 ```
+Opción B.3. Definimos un campo para relacionar con otros leads.
+
+**Body:**
+
+```json
+{   
+    "name": "Lead otra campaña",
+    "field_type_code": "LEAD",   //Siempre debemos especificar lead cuando usamos related_campaign_id
+    "related_campaign_id": 2,   //Establecemos la campaña de cual pertenece el lead a relacionar
+    "campaign_id": 1,
+    "order": 2,
+    "required": true,
+    "is_primary": false,
+    "lead_field_section_id": 1
+}
+```
+
+Opción B.4. Creamos un campo calculado. Este campo no recibe valores sino que los calcula. 
+
+**Body:**
+
+```json
+{   
+    "name": "Lead otra campaña",
+    "field_type_code": "CALCULATED",  
+    "calculation_expression": "Cantidad * Precio",  //Para referenciar a otros campos simplemente debemos usar sus nombres.    
+    "campaign_id": 1,
+    "order": 2,
+    "required": true,
+    "is_primary": false,
+    "lead_field_section_id": 1
+}
+```
+
 
 | Campo | Tipo | Obligatorio | Descripción |
 | --- | --- | --- | --- |
 | `name` | `str` | Sí* | Nombre visible del campo (Label). (*Opcional si se usa plantilla). |
 | `field_type_code` | `str` | Sí* | Tipo de dato (`STRING`, `INT`, `DATE`, `BOOL`). (*Opcional si se usa plantilla). |
+| `order` | `int` | Si* | Orden en que se muestran el campo. |
+| `campaign_id` | `int` | Si* | Campaña a la cual pertenece el campo |
+| `lead_field_section_id` | `int` | Si* | Se especifica la sección a la cual pertenece. |
 | `default_value` | `str` | No | Valor por defecto si el usuario no completa nada. |
 | `is_primary` | `bool` | No | `true` se valida para evitar repetidos y funciona como identificador, pueden definirse más de un field con este valor en True. |
 | `required` | `bool` | No | `true` si el campo es obligatorio. |
 | `input_mask` | `str` | No | Indica si la entrada debe cumplir un formato.  |
-| `order` | `int` | Si* | Orden en que se muestran el campo. |
-| `campaign_id` | `int` | Si* | Campaña a la cual pertenece el campo |
 | `is_visible` | `bool` | No | Por defecto es `true`, esta para ser utilizado en el front. |
 | `field_subtype_code` | `str` | Depende | Se especifica obligatoriamente si usamos un tipo de dato que tiene subtipo. |
-| `lead_field_section_id` | `int` | Si* | Se especifica la sección a la cual pertenece. |
+| `related_campaign_id` | `int` | No | Se especifica la campaña a la cual pertenece el lead. Este atributo se especifica cuando queremos relacionar leads |
+| `calculation_expression` | `str` | No | Expresión en EXCEL utilizada para calcular su valor. Este campo no va a recibir valores de entrada, sino que usa los valores de los demás campos. |
 
 ---
 
