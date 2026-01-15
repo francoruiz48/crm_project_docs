@@ -126,9 +126,14 @@ o en caso de ser multiples valores:
 }
 ```
 Donde `value` pasa a ser, en este caso, el id del o los nomenclator_items. 
+NOTA: Si queremos especificar leads se hacen de la misma forma que los nomencladores.
+
+Si queremos enviar una foto debemos enviarlo de esta forma:
+<img width="965" height="332" alt="image" src="https://github.com/user-attachments/assets/1b3a98b2-28a6-4b2a-9639-b665e5f867b9" />
+
+Donde data es el json que enviamos como siempre y file_ID es el archivo que enviamos donde ID es el id del campo de tipo FILE. 
 
 ---
-En los casos donde se utilicen los nomencladores como lead_field se utiliza "nomenclator_item_id", en vez de "value"
 
 ### 🟧 `PUT /leads/{id}`  
 Actualiza la configuración básica de un lead existente.
