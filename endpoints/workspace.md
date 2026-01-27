@@ -34,7 +34,8 @@ Crea un nuevo workspace.
 ```json
 {
   "name": "Equipo X",
-  "description": "Equipo de ejemplo"
+  "description": "Equipo de ejemplo",
+  "organization_id": 1
 }
 
 ```
@@ -43,6 +44,7 @@ Crea un nuevo workspace.
 | --- | --- | --- | --- |
 | `name` | `str` | Sí* | Nombre del workspace |
 | `description` | `str` | No | Descripción del workspace |
+| `organization_id` | `int` | Si* | Organización a la cual pertenece |
 
 ---
 
@@ -55,6 +57,7 @@ Actualiza la información de un workspace
 {
   "name": "iGV Youth",
   "description": "iGV Youth",
+  "organization_id": 1,
 }
 ```
 
